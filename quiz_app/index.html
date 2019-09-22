@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quiz Ap</title>
+    <script src = "questions.js"></script>
+
+</head>
+<body>
+    <h1>Quiz App</h1>
+    <h2 id = "question">Placeholder</h2>
+    <p id="ans1">Placeholder</p>
+    <p id="ans2">Placeholder</p>
+    <p id="ans3">Placeholder</p>
+    <p id="ans4">Placeholder</p>
+
+    <button id = "nextQuest">Next</button>
+
+
+    <script>
+    let current = 0;     
+    document.getElementById("question").textContent = questions[current].question;
+    document.getElementById("ans1").textContent = questions[0].answers[0];
+    document.getElementById("ans2").textContent = questions[0].answers[1];
+    document.getElementById("ans3").textContent = questions[0].question;
+    document.getElementById("ans4").textContent = questions[0].question;
+
+    let next = document.getElementById("nextQuest");
+    next.addEventListener("click", function(){
+        current++;
+        document.getElementById("question").textContent = questions[current].question;
+        
+    });
+  
+    
+    
+    </script>
+</body>
+</html>
