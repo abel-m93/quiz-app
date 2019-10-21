@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quiz Ap</title>
+    <link rel ="stylesheet" href="quizApp.css">
+    <link rel="stylesheet" href="https://unpkg.com/picnic">
+    <script src = "questions.js"></script>
+
+</head>
+<body>
+    <div class = "pageCont">
+        <div class = "contentCont">
+            <h1>Quiz App</h1>
+            <h2 id = "question">Placeholder</h2>
+            <div class = "answerCont">
+                <button id="ans1" class="stack choiceCont">Placeholder</button>
+                <button id="ans2" class="stack choiceCont">Placeholder</button>
+                <button id="ans3" class="stack choiceCont">Placeholder</button>
+
+            </div>        
+            <button id = "nextQuest">Next</button>
+            <button id = "resetbtn" class = "warning">Reset Test</button>
+        </div>
+    </div>
+
+    <script>
+    
+    //Generate questions and answers
+    let question = document.getElementById("question");
+    let ans1 = document.getElementById("ans1");
+    let ans2 = document.getElementById("ans2");
+    let ans3 = document.getElementById("ans3");
+    let current;
+
+    let player = {
+        score: 0,
+        ansChoice: " ",
+    };
+    
+    //Initialize first questiosn answers
+    initialize();
+
+    //event listeners 
+    let next = document.getElementById("nextQuest");
+    let reset = document.getElementById("resetbtn");
+    
+    
+    ans1.addEventListener("click", function(){
+        setPlayerChoice(ans1);
+        checkAns();
+    });
+    ans2.addEventListener("click", function(){
+        setPlayerChoice(ans2);
+        checkAns();
+    });
+    ans3.addEventListener("click", function(){
+        setPlayerChoice(ans3);
+        checkAns();
+    });
+    
+    ans1.addEventListener("click", function(){
+        console.log("Player choice is: " + player.ansChoice + " Correct answer is: " + questions[current].correctAns);
+    });
+    ans2.addEventListener("click", function(){
+        console.log(player.ansChoice);
+    });
+    ans3.addEventListener("click", function(){
+        console.log(player.ansChoice);
+    });
+
+    next.addEventListener("click", function(){
+        current++;
+        question.textContent = questions[current].question;
+        ans1.textContent = questions[current].answers[0];
+        ans2.textContent = questions[current].answers[1];
+        ans3.textContent = questions[current].answers[2];
+        hideThird();
+        console.log("Current index: " + current);
+        console.log("Current answer length: " + questions[current].answers.length);
+        
+
+    });
+
+    reset.addEventListener("click", function(){
+        initialize();
+        console.log(current);
+    });
+
+
+    //functions
+    function initialize(){
+        current = 0;
+        question.textContent = questions[current].question; 
+        ans1.textContent = questions[current].answers[0];
+        ans2.textContent = questions[current].answers[1];
+        ans3.textContent = questions[current].answers[2];
+        hideThird();
+
+    }
+
+    function hideThird(){
+        if(questions[current].answers.length === 3){
+            if(ans3.classList.contains("hideAns")){
+                ans3.classList.remove("hideAns");
+            }
+        }
+        else{
+            ans3.classList.add("hideAns");
+        }
+    }
+
+    function setPlayerChoice(ansTarget){
+        player.ansChoice = ansTarget.textContent;
+    }
+
+    function checkAns(){
+        if(player.ansChoice === questions[current].correctAns){
+            alert("CORRECT");
+        }
+        else{
+            alert("Try Again");
+        }
+    }
+
+  
+    
+    </script>
+</body>
+</html>
