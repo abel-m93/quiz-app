@@ -14,8 +14,9 @@
     <div class = "pageCont">
         <div class = "contentCont">
             <h1>Quiz App</h1>
-            <h2 id = "question">Placeholder</h2>
-            <div class = "answerCont">
+            <h2 class="playerScore">Player Score: <span id = numScore></span></h2>
+            <h3 id = "question">Placeholder</h3>
+            <div class = "answerCont" id = "ansGroup">
                 <button id="ans1" class="stack choiceCont">Placeholder</button>
                 <button id="ans2" class="stack choiceCont">Placeholder</button>
                 <button id="ans3" class="stack choiceCont">Placeholder</button>
@@ -30,6 +31,10 @@
     
     //Generate questions and answers
     let question = document.getElementById("question");
+    let ansGroup = document.getElementById("ansGroup");
+    let btns = document.getElementsByTagName("button");
+
+    // let ansGroup = document.getElementsByClassName("answerCont");
     let ans1 = document.getElementById("ans1");
     let ans2 = document.getElementById("ans2");
     let ans3 = document.getElementById("ans3");
@@ -39,6 +44,30 @@
         score: 0,
         ansChoice: " ",
     };
+
+    let playerScore = document.getElementById("numScore");
+    playerScore.textContent = player.score;
+
+
+    //Correct / Wrong Messages
+    let correctMsg = document.createElement('div');
+    correctMsg.textContent = "CORRECT! Please click next";
+    correctMsg.classList.add("success");
+    // document.body.appendChild(correctMsg);
+    // ansGroup.append(correctMsg);
+
+    let wrongMsg = document.createElement('div');
+    wrongMsg.textContent = "Sorry, that is incorrect.";
+    wrongMsg.classList.add("failure");
+
+    let selectMsg = document.createElement('div');
+    selectMsg.textContent = "Please select an answer.";
+    selectMsg.classList.add("attempt");
+    // document.body.appendChild(correctMsg);
+    // ansGroup.append(wrongMsg);
+
+
+
     
     //Initialize first questiosn answers
     initialize();
@@ -50,48 +79,69 @@
     
     ans1.addEventListener("click", function(){
         setPlayerChoice(ans1);
+        if(ansGroup.contains(selectMsg)){
+            removeMsg(ansGroup, selectMsg);
+        };
         checkAns();
+
     });
     ans2.addEventListener("click", function(){
         setPlayerChoice(ans2);
+        if(ansGroup.contains(selectMsg)){
+            removeMsg(ansGroup, selectMsg);
+        };
         checkAns();
+
     });
     ans3.addEventListener("click", function(){
         setPlayerChoice(ans3);
+        if(ansGroup.contains(selectMsg)){
+            removeMsg(ansGroup, selectMsg);
+        };
         checkAns();
-    });
-    
-    ans1.addEventListener("click", function(){
-        console.log("Player choice is: " + player.ansChoice + " Correct answer is: " + questions[current].correctAns);
-    });
-    ans2.addEventListener("click", function(){
-        console.log(player.ansChoice);
-    });
-    ans3.addEventListener("click", function(){
-        console.log(player.ansChoice);
+
     });
 
     next.addEventListener("click", function(){
+        if(!ansGroup.contains(correctMsg) && !ansGroup.contains(wrongMsg)){
+            appendMsg(ansGroup, selectMsg);
+        }
+        else{
         current++;
         question.textContent = questions[current].question;
         ans1.textContent = questions[current].answers[0];
         ans2.textContent = questions[current].answers[1];
         ans3.textContent = questions[current].answers[2];
         hideThird();
+        if(ansGroup.contains(selectMsg) || ansGroup.contains(wrongMsg) || ansGroup.contains(correctMsg)){
+            removeMsg(ansGroup, ansGroup.lastChild);
+            // removeMsg(ansGroup, ansGroup.lastChild);
+        };
+        for(let elem of btns){
+            elem.removeAttribute("disabled");
+        };
         console.log("Current index: " + current);
         console.log("Current answer length: " + questions[current].answers.length);
-        
+        }
 
     });
 
     reset.addEventListener("click", function(){
         initialize();
+        if(ansGroup.contains(selectMsg) || ansGroup.contains(wrongMsg) || ansGroup.contains(correctMsg)){
+            removeMsg(ansGroup, ansGroup.lastChild);
+        };
+        for(let elem of btns){
+            elem.removeAttribute("disabled");
+        };
+        resetScore();
         console.log(current);
     });
 
 
     //functions
     function initialize(){
+        shuffleArray(questions);
         current = 0;
         question.textContent = questions[current].question; 
         ans1.textContent = questions[current].answers[0];
@@ -116,17 +166,51 @@
         player.ansChoice = ansTarget.textContent;
     }
 
-    function checkAns(){
-        if(player.ansChoice === questions[current].correctAns){
-            alert("CORRECT");
-        }
-        else{
-            alert("Try Again");
-        }
+    function resetScore(){
+        player.score = 0;
+        playerScore.textContent = player.score;
     }
 
-  
-    
-    </script>
+    function addToScore(){
+        player.score += 1;
+        playerScore.textContent = player.score;
+    }
+    function checkAns(){
+        if(player.ansChoice === questions[current].correctAns){
+            appendMsg(ansGroup, correctMsg);
+            addToScore();
+        }
+        else{
+            appendMsg(ansGroup, wrongMsg);
+            // ansGroup.append(wrongMsg);
+        }
+
+        // let btns = document.getElementsByTagName("button");
+        for(let elem of btns){
+            elem.setAttribute("disabled", "disabled");
+            if(elem.id === "nextQuest" || elem.id === "resetbtn"){
+                elem.removeAttribute("disabled");
+            };
+        };
+    }
+
+    function appendMsg(target, message){
+        target.appendChild(message);
+    }
+
+    function removeMsg(target, node){
+        target.removeChild(node);
+    }
+
+    function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+</script>
+
 </body>
 </html>

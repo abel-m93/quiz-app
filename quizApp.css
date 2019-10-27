@@ -1,12 +1,12 @@
 .pageCont{
     max-width: 960px;
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
     margin: 0 auto;
 }
 
 .contentCont{
     text-align: center;
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
 .answerCont{
@@ -23,6 +23,27 @@
 button.stack{
     margin-bottom: 1em;
     text-align: left;
+}
+
+.success{
+    color: green;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    font-size: 1.75em;
+}
+
+.failure{
+    color: red;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    font-size: 1.5em; 
+}
+
+.attempt{
+    color: orange;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    font-size: 1.5em; 
 }
 
 .hideAns{
