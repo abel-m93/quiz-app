@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Quiz Ap</title>
+    <title>Quiz App</title>
     <link rel ="stylesheet" href="quizApp.css">
     <link rel="stylesheet" href="https://unpkg.com/picnic">
     <script src = "questions.js"></script>
@@ -12,14 +12,28 @@
 </head>
 <body>
     <div class = "pageCont">
-        <div class = "contentCont">
+        <div class = "contentCont" id = "startPage">
+            <h1>Welcome To the Illinois Written Test Study Guide</h1>
+            <p>Please choose a selection below</p>
+            <div class = "answerCont">
+                <button class="stack" id = "questions15" style="text-align: center;">15-Question Quiz</button>
+                <button class="stack" id = "questions25" style="text-align: center;">25-Question Quiz</button>
+                <button class="stack" id = "questionsAll" style="text-align: center;">All Questions Quiz</button>
+            </div>
+            
+
+        </div>
+        <div class = "contentCont" id = "mainQuiz">
             <h1>Quiz App</h1>
             <h2 class="playerScore">Player Score: <span id = numScore></span></h2>
+            <h2 class="questionCounter">Question <span id="currentQuest">1</span>
+            of <span id="totalQuest">20</span></h2>
+            
             <h3 id = "question">Placeholder</h3>
             <div class = "answerCont" id = "ansGroup">
-                <button id="ans1" class="stack choiceCont">Placeholder</button>
-                <button id="ans2" class="stack choiceCont">Placeholder</button>
-                <button id="ans3" class="stack choiceCont">Placeholder</button>
+                <button id="ans1" class="stack choice">Placeholder</button>
+                <button id="ans2" class="stack choice">Placeholder</button>
+                <button id="ans3" class="stack choice">Placeholder</button>
 
             </div>        
             <button id = "nextQuest">Next</button>
@@ -29,32 +43,52 @@
 
     <script>
     
-    //Generate questions and answers
+    
+    //Initialize DOM elements to variables
+    let questions15 = document.getElementById("questions15");
+    let questions25 = document.getElementById("questions25");
+    let questionsAll = document.getElementById("questionsAll");
+    let questionsSpliced;
+
+    let numQuestSelect = {
+
+        question15: false,
+        question25: false,
+        questionAll: false
+    };
+    
+    
     let question = document.getElementById("question");
     let ansGroup = document.getElementById("ansGroup");
+    let choices = document.querySelectorAll(".choice");
     let btns = document.getElementsByTagName("button");
 
-    // let ansGroup = document.getElementsByClassName("answerCont");
+    let currentQuest = document.getElementById("currentQuest");
+    let totalQuest = document.getElementById("totalQuest");
+    
     let ans1 = document.getElementById("ans1");
     let ans2 = document.getElementById("ans2");
     let ans3 = document.getElementById("ans3");
     let current;
+    let questionCounter = 1;
 
     let player = {
         score: 0,
         ansChoice: " ",
     };
 
+
     let playerScore = document.getElementById("numScore");
     playerScore.textContent = player.score;
 
+    let next = document.getElementById("nextQuest");
+    let reset = document.getElementById("resetbtn");
+   
 
     //Correct / Wrong Messages
     let correctMsg = document.createElement('div');
     correctMsg.textContent = "CORRECT! Please click next";
     correctMsg.classList.add("success");
-    // document.body.appendChild(correctMsg);
-    // ansGroup.append(correctMsg);
 
     let wrongMsg = document.createElement('div');
     wrongMsg.textContent = "Sorry, that is incorrect.";
@@ -63,74 +97,95 @@
     let selectMsg = document.createElement('div');
     selectMsg.textContent = "Please select an answer.";
     selectMsg.classList.add("attempt");
-    // document.body.appendChild(correctMsg);
-    // ansGroup.append(wrongMsg);
 
+    //Element for Questions with images
+    let imgTest = document.createElement('img');
 
-
-    
-    //Initialize first questiosn answers
-    initialize();
+    //Variables for displaying resuls page
+    let results;
+    let resultsPercent;
+    let rcol1 = document.createElement('span');
+    let rcol2 = document.createElement('span');
+    let rcol3 = document.createElement('span');
 
     //event listeners 
-    let next = document.getElementById("nextQuest");
-    let reset = document.getElementById("resetbtn");
-    
-    
-    ans1.addEventListener("click", function(){
-        setPlayerChoice(ans1);
-        if(ansGroup.contains(selectMsg)){
-            removeMsg(ansGroup, selectMsg);
-        };
-        checkAns();
 
+    questions15.addEventListener("click", function(){
+        numQuestSelect.question15 = true;
+        initialize();
+        // showTest();
+        // hideMenu();
     });
-    ans2.addEventListener("click", function(){
-        setPlayerChoice(ans2);
-        if(ansGroup.contains(selectMsg)){
-            removeMsg(ansGroup, selectMsg);
-        };
-        checkAns();
 
+    questions25.addEventListener("click", function(){
+        numQuestSelect.question25 = true;
+        initialize();
+        // showTest();
+        // hideMenu();
     });
-    ans3.addEventListener("click", function(){
-        setPlayerChoice(ans3);
-        if(ansGroup.contains(selectMsg)){
-            removeMsg(ansGroup, selectMsg);
-        };
-        checkAns();
 
+    questionsAll.addEventListener("click", function(){
+        numQuestSelect.questionAll = true;
+        initialize();
+        // showTest();
+        // hideMenu();
     });
+
+
+    // initialize();
+
+    for(let el of choices){
+        el.addEventListener("click", function(){
+            setPlayerChoice(el);
+            if(ansGroup.contains(selectMsg)){
+                removeMsg(ansGroup, selectMsg);
+            };
+            checkAns();
+        });
+    };
 
     next.addEventListener("click", function(){
+        if(current === questions.length - 1)
+        {
+            endTest();
+        }
         if(!ansGroup.contains(correctMsg) && !ansGroup.contains(wrongMsg)){
             appendMsg(ansGroup, selectMsg);
         }
+
         else{
-        current++;
-        question.textContent = questions[current].question;
-        ans1.textContent = questions[current].answers[0];
-        ans2.textContent = questions[current].answers[1];
-        ans3.textContent = questions[current].answers[2];
-        hideThird();
-        if(ansGroup.contains(selectMsg) || ansGroup.contains(wrongMsg) || ansGroup.contains(correctMsg)){
-            removeMsg(ansGroup, ansGroup.lastChild);
-            // removeMsg(ansGroup, ansGroup.lastChild);
-        };
-        for(let elem of btns){
-            elem.removeAttribute("disabled");
-        };
-        console.log("Current index: " + current);
-        console.log("Current answer length: " + questions[current].answers.length);
-        }
+                current++;
+                if(questionCounter < totalQuest.innerText){
+                    questionCounter++;
+                }
+
+                showCurrentQuestion();
+
+                if(questions[current].hasImage){
+                    genQuestionWithImage(current);
+                    genAnswers(current);
+                }
+
+                else{
+                    genQuestions(current);   
+                    genAnswers(current);
+                }
+                hideThird();
+                removeConfirmMsgs();
+                for(let elem of btns){
+                    elem.removeAttribute("disabled");
+                };
+            }
+
+            // appendMsg(ansGroup, genResults());
 
     });
 
     reset.addEventListener("click", function(){
         initialize();
-        if(ansGroup.contains(selectMsg) || ansGroup.contains(wrongMsg) || ansGroup.contains(correctMsg)){
-            removeMsg(ansGroup, ansGroup.lastChild);
-        };
+        while(ansGroup.childElementCount > 3){
+            removeConfirmMsgs();
+        }
         for(let elem of btns){
             elem.removeAttribute("disabled");
         };
@@ -138,19 +193,60 @@
         console.log(current);
     });
 
+    
 
     //functions
     function initialize(){
         shuffleArray(questions);
+        if(numQuestSelect.question15){
+            questions.splice(15);
+        }
+        else if(numQuestSelect.question25){
+            questions.splice(25);
+        }
+        else(numQuestSelect.questionAll);
+            
+        
+        
         current = 0;
-        question.textContent = questions[current].question; 
-        ans1.textContent = questions[current].answers[0];
-        ans2.textContent = questions[current].answers[1];
-        ans3.textContent = questions[current].answers[2];
+        showCurrentQuestion();
+        totalQuest.innerText = questions.length;
+        if(questions[current].hasImage){
+            
+            // console.log("Detect hasImage property test SUCCESS");
+            genQuestionWithImage(current);
+            genAnswers(current);
+        }
+        else{
+            // console.log("Detect hasImage property test FAILED");    
+             genQuestions(current);
+             genAnswers(current);
+        }
         hideThird();
-
     }
 
+    function genQuestions(index){
+        if(imgTest){
+            imgTest.replaceWith(question);
+        }
+        question.textContent = questions[index].question;
+    }
+
+    function genQuestionWithImage(index){
+        imgTest.setAttribute("src", questions[index].question);
+        genQuestions(index);
+        question.replaceWith(imgTest);
+    }
+    
+    function genAnswers(index){
+        ans1.textContent = questions[index].answers[0];
+        ans2.textContent = questions[index].answers[1];
+        ans3.textContent = questions[index].answers[2];
+    }
+
+    function showCurrentQuestion(){
+        currentQuest.textContent = questionCounter;
+    }
     function hideThird(){
         if(questions[current].answers.length === 3){
             if(ans3.classList.contains("hideAns")){
@@ -169,6 +265,8 @@
     function resetScore(){
         player.score = 0;
         playerScore.textContent = player.score;
+        questionCounter = 1;
+        showCurrentQuestion();
     }
 
     function addToScore(){
@@ -198,8 +296,15 @@
         target.appendChild(message);
     }
 
-    function removeMsg(target, node){
-        target.removeChild(node);
+    function removeMsg(target, message){
+        target.removeChild(message);
+    }
+
+    function removeConfirmMsgs(){
+        if(ansGroup.contains(selectMsg) || ansGroup.contains(results) || ansGroup.contains(wrongMsg) || ansGroup.contains(correctMsg)){
+                    removeMsg(ansGroup, ansGroup.lastChild);
+                    // removeMsg(ansGroup, ansGroup.lastChild);
+                };
     }
 
     function shuffleArray(array) {
@@ -210,7 +315,40 @@
         array[j] = temp;
     }
 }
+
+    function genResults(){
+        //Create Results Page 
+        results = document.createElement('div');
+        results.classList.add('results');
+        results.innerHTML = '<h2>Your Results:</h2><hr><div class ="flex"><div class = "resultItem" id = "resultScore">Your Score<br> </div><div class = "resultItem" id = "maxQuestions">Number of Questions<br></div><div class = "resultItem" id = "resultPercent">Percentage<br></div></div>';
+        resultsPercent = Math.ceil((player.score / questions.length) * 100);
+
+        rcol1.textContent = player.score;
+        rcol2.textContent = questions.length;
+        rcol3.textContent = resultsPercent;
+        // appendMsg(document.querySelector("#resultScore"), playerScore);
+        // rcol1 = document.querySelector("#resultScore");
+        // // appendMsg(rcol1, playerScore);
+        // rcol2 = document.querySelector("#maxQuestions");
+        // // appendMsg(rcol2, totalQuest);
+        // rcol3 = document.querySelector("#resultPercent");;
+        // rcol3 = Math.ceil((rcol1 / rcol2) * 100);
+        return results;
+        // appendMsg(ansGroup, results);
+    }
+
+    function endTest(){
+        appendMsg(ansGroup, genResults());
+        appendMsg(document.querySelector("#resultScore"), rcol1);
+        appendMsg(document.querySelector("#maxQuestions"), rcol2);
+        appendMsg(document.querySelector("#resultPercent"), rcol3);
+    }
+    // appendMsg(ansGroup, results);
+
+    // let x = document.querySelector("#resultScore");
+
 </script>
 
 </body>
 </html>
+ 
