@@ -1,8 +1,13 @@
+div{
+
+    border: 1px solid red;
+}
+
 .pageCont{
     max-width: 960px;
     /* border: 1px solid blue; */
     margin: 0 auto;
-    margin-bottom: 100px;
+    margin-bottom: 10px;
 }
 
 .contentCont{
@@ -51,6 +56,9 @@ button.stack{
     visibility: hidden;
 }
 
+.hideMenu{
+    display: none;
+}
 @media only screen and (max-width: 768px) { 
     /* For mobile phones: */
 

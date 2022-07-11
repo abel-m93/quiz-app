@@ -14,8 +14,9 @@
     <div class = "pageCont">
         <div class = "contentCont" id = "startPage">
             <h1>Welcome To the Illinois Written Test Study Guide</h1>
-            <p>Please choose a selection below</p>
-            <div class = "answerCont">
+            
+            <div class = "answerCont" id = "quizTypeCont">
+                <p>Please choose a selection below</p>
                 <button class="stack" id = "questions15" style="text-align: center;">15-Question Quiz</button>
                 <button class="stack" id = "questions25" style="text-align: center;">25-Question Quiz</button>
                 <button class="stack" id = "questionsAll" style="text-align: center;">All Questions Quiz</button>
@@ -23,7 +24,7 @@
             
 
         </div>
-        <div class = "contentCont" id = "mainQuiz">
+        <div class = "contentCont hideMenu" id = "mainQuiz">
             <h1>Quiz App</h1>
             <h2 class="playerScore">Player Score: <span id = numScore></span></h2>
             <h2 class="questionCounter">Question <span id="currentQuest">1</span>
@@ -41,6 +42,10 @@
         </div>
     </div>
 
+
+
+
+<!--START JAVASCRIPT-->
     <script>
     
     
@@ -48,6 +53,7 @@
     let questions15 = document.getElementById("questions15");
     let questions25 = document.getElementById("questions25");
     let questionsAll = document.getElementById("questionsAll");
+    let quizTypeCont = document.getElementById("quizTypeCont");
     let questionsSpliced;
 
     let numQuestSelect = {
@@ -57,9 +63,10 @@
         questionAll: false
     };
     
-    
+    let startMenu = document.getElementById("startPage");
     let question = document.getElementById("question");
     let ansGroup = document.getElementById("ansGroup");
+    let mainQuiz = document.getElementById("mainQuiz");
     let choices = document.querySelectorAll(".choice");
     let btns = document.getElementsByTagName("button");
 
@@ -114,7 +121,7 @@
         numQuestSelect.question15 = true;
         initialize();
         // showTest();
-        // hideMenu();
+        hideStartMenu();
     });
 
     questions25.addEventListener("click", function(){
@@ -122,6 +129,7 @@
         initialize();
         // showTest();
         // hideMenu();
+        hideStartMenu();
     });
 
     questionsAll.addEventListener("click", function(){
@@ -129,6 +137,7 @@
         initialize();
         // showTest();
         // hideMenu();
+        hideStartMenu();
     });
 
 
@@ -182,23 +191,25 @@
     });
 
     reset.addEventListener("click", function(){
-        
-        initialize();
+        window.location.reload();
+        /*initialize();
         while(ansGroup.childElementCount > 3){
             removeConfirmMsgs();
         }
         for(let elem of btns){
             elem.removeAttribute("disabled");
         };
-        resetScore();
-        console.log(current);
+        resetScore();    */
+        //mainQuiz.classList.add("hideAns");
+        //quizTypeCont.classList.remove("hideMenu");
+        //console.log(current);
     });
 
     
 
     //functions
     function initialize(){
-       // shuffleArray(questions);
+        //shuffleArray(questions);
         if(numQuestSelect.question15){
            questionsSpliced = questions.splice(15);
         }
@@ -224,6 +235,11 @@
         hideThird();
     }
 
+    function hideStartMenu(){
+        quizTypeCont.classList.add("hideMenu");
+        mainQuiz.classList.remove("hideMenu");
+
+    }
     function genQuestions(index){
         if(imgTest){
             imgTest.replaceWith(question);
@@ -324,7 +340,7 @@
 
         rcol1.textContent = player.score;
         rcol2.textContent = questions.length;
-        rcol3.textContent = resultsPercent;
+        rcol3.textContent = resultsPercent + "%";
         // appendMsg(document.querySelector("#resultScore"), playerScore);
         // rcol1 = document.querySelector("#resultScore");
         // // appendMsg(rcol1, playerScore);
@@ -346,7 +362,11 @@
 
     // let x = document.querySelector("#resultScore");
 
+//AFTER REACHING END OF QUIZ, NO OPTION TO PLAY AGAIN AND CHOOSE DIFFERENT TEST TYPE. 
+//RESET BUTTON WONT GO BACK TO BEGINNING STATE OF GAME
 </script>
+
+
 
 </body>
 </html>
