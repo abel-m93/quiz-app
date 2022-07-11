@@ -65,4 +65,15 @@ button.stack{
     .answerCont{
         max-width: 18em;
     }
+
+    #mainHeading{
+        font-size: 1.5em;
+    }
+
+    .playerScore, .questionCounter{
+        font-size: 1.25em;
+
+    }
+
+    
   } 
