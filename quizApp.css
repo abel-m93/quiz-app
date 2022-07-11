@@ -1,7 +1,7 @@
-div{
+/*div{
 
-    border: 1px solid red;
-}
+    border: 1px solid red; 
+} */
 
 .pageCont{
     max-width: 960px;
@@ -75,5 +75,16 @@ button.stack{
 
     }
 
+    .attempt, .success, .failure{
+        font-size: 1.25em;
+        padding: 0;
+    }
+
+    #question{
+        font-weight: 400;
+        padding-left: 2px;
+        padding-right: 2px;
+
+    }
     
   } 
